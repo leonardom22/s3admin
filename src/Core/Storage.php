@@ -23,7 +23,9 @@ class Storage
             mkdir(self::getPathDefault());
         }
 
-        $handle = fopen(self::getPathDefault() . DS . $file, 'w');
+        $file = self::getPathDefault() . DS . $file;
+
+        $handle = fopen($file, 'w');
 
         if ($handle == false) {
             return false;
@@ -31,6 +33,8 @@ class Storage
 
         fwrite($handle, $content);
         fclose($handle);
+
+        chmod($file, 0777);
 
         return true;
     }
