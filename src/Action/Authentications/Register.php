@@ -20,32 +20,13 @@ class Register extends Contract\Action
      */
     public function execute(array $parameters = [])
     {
-        $body = Core\Request::getBody();
-
-        if (empty($body)) {
-            return Response\Creator::invalidRequest('Invalid body');
-        }
-
-        $fields = [
-            'name',
-            'key',
-            'secret',
-            'region'
-        ];
-
-        $validated = Core\Request::validate($fields, $body);
-
-        if ($validated != false) {
-            return Response\Creator::invalidRequest('Field not found: \'' . $validated . '\'');
-        }
-
         $authentications = Json::toArray(Core\Storage::retrieve('authentications.json'));
 
         if (empty($authentications)) {
             $authentications = [];
         }
 
-        $identifier = $body['identifier'];
+        $identifier = $this->body['identifier'];
         if (empty($identifier)) {
             $identifier = count($authentications) + 1;
         }
@@ -53,11 +34,11 @@ class Register extends Contract\Action
         $index = $this->authenticationExists($authentications, $identifier);
 
         $save = [
-            'name' => $body['name'],
+            'name' => $this->body['name'],
             'identifier' => $identifier,
-            'key' => $body['key'],
-            'secret' => $body['secret'],
-            'region' => $body['region']
+            'key' => $this->body['key'],
+            'secret' => $this->body['secret'],
+            'region' => $this->body['region']
         ];
 
         if ($index == false) {
