@@ -1,0 +1,21 @@
+{
+    "name": "leonardom22/s3admin",
+    "authors": [
+        {
+            "name": "Leonardo Oliveira",
+            "email": "leonardo.malia@live.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "files": [
+            "support/helpers.php"
+        ]
+    },
+    "require": {
+        "aws/aws-sdk-php": "^3.24",
+        "eloquent/enumeration": "5.1.*"
+    }
+}
