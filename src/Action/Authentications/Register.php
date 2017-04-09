@@ -41,7 +41,7 @@ class Register extends Contract\Action
             'region' => $this->body['region']
         ];
 
-        if ($index == false) {
+        if ($index === false) {
             $authentications[] = $save;
         } else {
             $authentications[$index] = $save;

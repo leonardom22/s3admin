@@ -13,6 +13,8 @@ var Main = function() {
 
     var self = this;
 
+    var authenticationsListArr = [];
+
     this.construct = function () {
         self.retrieveAuthentications();
 
@@ -252,22 +254,36 @@ var Main = function() {
             'region': region.val()
         };
 
-        if (self.postApiAuthentication(dataSend) == true) {
+        if (self.postApiAuthentication(dataSend) == false) {
+            alert("Could not save");
+            return false;
+        }
 
-            var authentications = self.getApiAuthentications();
-            var selector = '#dropdown-authentications';
-            var container = $(selector).html();
+        var authentications = self.getApiAuthentications();
+        var selector = '#dropdown-authentications';
+        var container = $(selector).html();
 
-            var authentication = authentications[authentications.length - 1];
+        var authentication = authentications[authentications.length - 1];
+
+        var x, updateHtml = true;
+        for (x in authenticationsListArr) {
+            if (authenticationsListArr[x] == authentication['identifier']) {
+                updateHtml = false;
+            }
+        }
+
+        if (updateHtml == true) {
+            authenticationsListArr.push(authentication['identifier']);
 
             container += '<li><a href="#" class="show-authenticate" data-identifier="' + authentication['identifier'] + '">' + authentication['name'] + '</a></li>';
 
             $(selector).html(container);
-
-            $(".show-authenticate").click(self.showAuthentication);
-
-            alert("Saved successfully");
         }
+
+        $(".show-authenticate").click(self.showAuthentication);
+
+        alert("Saved successfully");
+
     };
 
     this.retrieveAuthentications = function() {
@@ -280,6 +296,8 @@ var Main = function() {
         for (x in authentications) {
             val = authentications[x];
             container += '<li><a href="#" class="show-authenticate" data-identifier="' + val['identifier'] + '">' + val['name'] + '</a></li>';
+
+            authenticationsListArr.push(val['identifier']);
         }
 
         $(selector).html(container);
