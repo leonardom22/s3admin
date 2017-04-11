@@ -4,6 +4,7 @@ namespace App\Action\Objects;
 
 use App\Contract\Action;
 use App\Response;
+use App\Core;
 
 /**
  * Class Retrieve
@@ -23,10 +24,23 @@ class Retrieve extends Action\ConnectionRequired
             return $validated;
         }
 
+        $path = Core\Storage::getPathDefault() . DS . 'tmp' . DS;
+
+        if (!is_dir($path)) {
+            mkdir($path);
+        }
+
+        $fileName = end(explode('/', $this->body['file']));
+
+        $newFileName = round(microtime(true) * 1000) . '----' . $fileName;
+
+        $pathFile = $path . $newFileName;
+
         try {
-            $object = $this->connection->getObject([
+            $this->connection->getObject([
                 'Bucket' => $this->body['bucket'],
-                'Key' => $this->body['file']
+                'Key' => $this->body['file'],
+                'SaveAs' => $pathFile
             ]);
 
         } catch (\Exception $e) {
@@ -34,7 +48,11 @@ class Retrieve extends Action\ConnectionRequired
             return Response\Creator::error($e->getMessage());
         }
 
-        printrx($object);
+        chmod($pathFile, 0777);
+
+        return new Response\Success([
+            'file' => $newFileName
+        ]);
     }
 
     /**

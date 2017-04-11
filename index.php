@@ -103,7 +103,7 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
         </div>
     </div>
 </nav>
-<div class="container theme-showcase" role="main"  style="margin-top: 40px;">
+<div class="container theme-showcase" role="main"  style="margin-top: 40px; width:80%;">
 
     <div class="page-header">
         <h1>Files</h1>

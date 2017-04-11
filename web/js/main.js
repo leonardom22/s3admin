@@ -1,13 +1,3 @@
-String.prototype.rtrim = function (s) {
-    if (s == undefined)
-        s = '\\s';
-    return this.replace(new RegExp("[" + s + "]*$"), '');
-};
-String.prototype.ltrim = function (s) {
-    if (s == undefined)
-        s = '\\s';
-    return this.replace(new RegExp("^[" + s + "]*"), '');
-};
 
 var Main = function() {
 
@@ -46,6 +36,7 @@ var Main = function() {
         }
 
         $("#connectionId").val(connectionId);
+        $("#path").val('');
 
         var container = $('#body-files');
 
@@ -76,18 +67,8 @@ var Main = function() {
     };
 
     this.clickFolder = function () {
-        var pathSelector = $("#path");
 
-        var path = '';
-
-        if (pathSelector.val() != "" && pathSelector.val() != "/") {
-
-            path = pathSelector.val();
-
-            path = path.rtrim('/') + "/" + $(this).attr("data-file");
-        } else {
-            path = $(this).attr("data-file");
-        }
+        var path = self.buildPathFile($(this).attr("data-file"));
 
         var bucket = $("#bucket").html();
 
@@ -95,7 +76,7 @@ var Main = function() {
             return false;
         }
 
-        pathSelector.val(path);
+        $("#path").val(path);
 
         self.reloadClicks();
     };
@@ -118,6 +99,19 @@ var Main = function() {
         pathSelector.val(path);
 
         self.reloadClicks();
+    };
+
+    this.clickFile = function () {
+
+        var connectionId = $("#connectionId").val();
+
+        var path = self.buildPathFile($(this).attr("data-file"));
+
+        var bucket = $("#bucket").html();
+
+        var file = self.getApiObject(connectionId, path, bucket);
+
+        downloadURL(BASE_PATH + '/download.php?file=' + file);
     };
 
     this.listObjects = function (bucket, path) {
@@ -166,6 +160,7 @@ var Main = function() {
         $(".folder").click(self.clickFolder);
         $(".bucket").click(self.clickBucket);
         $(".back").click(self.clickBack);
+        $(".file").click(self.clickFile);
     };
 
     this.buildTrFiles = function (type, file, lastModified, size) {
@@ -207,6 +202,24 @@ var Main = function() {
         html += "<td>" + size + "</td>\n";
         html += "</tr>\n";
         return html;
+    };
+
+    this.buildPathFile = function (file) {
+        if (typeof file == "undefined") {
+            return false;
+        }
+
+        var pathSelector = $("#path"),
+            path = file;
+
+        if (pathSelector.val() != "" && pathSelector.val() != "/") {
+
+            path = pathSelector.val();
+
+            path = path.rtrim('/') + "/" + file;
+        }
+
+        return path;
     };
 
     this.showModalNewAuthentication = function () {
@@ -445,7 +458,65 @@ var Main = function() {
 
     };
 
+    this.getApiObject = function (connectionId, object, bucket) {
+        if (
+            typeof connectionId == "undefined"
+            ||
+            typeof object == "undefined"
+            ||
+            typeof bucket == "undefined"
+        ) {
+            return false;
+        }
+
+        var dataSend = {
+            'file': object,
+            'bucket': bucket
+        };
+
+        var apiReturn = null;
+
+        $.ajax({
+            'url': BASE_PATH + '/api/objects/retrieve/' + connectionId,
+            'dataType': 'json',
+            'type': 'POST',
+            'data': JSON.stringify(dataSend),
+            'contentType': 'application/json',
+            'async': false,
+            'success': function (data) {
+                apiReturn = data;
+            },
+            'error': function (xhr) {
+            }
+        });
+
+        return apiReturn['file'];
+    };
+
     this.construct();
 };
+
+String.prototype.rtrim = function (s) {
+    if (s == undefined)
+        s = '\\s';
+    return this.replace(new RegExp("[" + s + "]*$"), '');
+};
+String.prototype.ltrim = function (s) {
+    if (s == undefined)
+        s = '\\s';
+    return this.replace(new RegExp("^[" + s + "]*"), '');
+};
+
+function downloadURL(url) {
+    var hiddenIFrameID = 'hiddenDownloader',
+        iframe = document.getElementById(hiddenIFrameID);
+    if (iframe === null) {
+        iframe = document.createElement('iframe');
+        iframe.id = hiddenIFrameID;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+    }
+    iframe.src = url;
+}
 
 new Main();
