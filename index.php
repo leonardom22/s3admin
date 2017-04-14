@@ -21,10 +21,15 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
 
     <link href="web/css/bootstrap.min.css" rel="stylesheet">
     <link href="web/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="web/css/main.css" rel="stylesheet">
 
 </head>
 
 <body>
+
+<div id="loader" style="display: none">
+    <img src="web/img/loader.gif" width="100">
+</div>
 
 <input type="hidden" id="connectionId" value="">
 
@@ -112,6 +117,7 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
     <div class="input-group">
         <div class="input-group-addon" id="bucket">-</div>
         <input type="text" class="form-control" id="path" placeholder="Path" value="">
+        <div class="input-group-addon" id="return-buckets" style="display: none;"><a href="#">Return to the Buckets</a></div>
     </div>
 
     <div class="row">

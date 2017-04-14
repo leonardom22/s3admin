@@ -3,6 +3,8 @@ var Main = function() {
 
     var self = this;
 
+    var bucket = null;
+
     var authenticationsListArr = [];
 
     this.construct = function () {
@@ -13,6 +15,12 @@ var Main = function() {
         $("#modal-new-authentication").click(self.showModalNewAuthentication);
 
         $("#connect").click(self.connect);
+
+        $("#return-buckets").click(function () {
+            var connectionId = $("#connectionId").val();
+
+            self.connect(connectionId);
+        });
 
         var pathSelector = $("#path");
 
@@ -25,8 +33,19 @@ var Main = function() {
         });
     };
 
-    this.connect = function () {
-        var connectionId = $("#identifier").val();
+    this.connect = function (connectionId) {
+        self.showLoader();
+
+        $("#bucket").attr("data-bucket", "").html("-");
+        $("#return-buckets").hide();
+
+        if (
+            typeof connectionId == "undefined"
+            ||
+            typeof connectionId == "object"
+        ) {
+            connectionId = $("#identifier").val();
+        }
 
         var buckets = self.getApiBuckets(connectionId);
 
@@ -53,24 +72,33 @@ var Main = function() {
 
         self.reloadClicks();
 
+        self.hideLoader();
+
         $('#authenticate').modal('hide');
     };
 
     this.clickBucket = function () {
+        self.showLoader();
+
         var bucket = $(this).attr("data-file");
 
-        $("#bucket").html(bucket);
+        $("#bucket").attr("data-bucket", bucket).html(bucket);
+
+        $("#return-buckets").show();
 
         self.listObjects(bucket, '');
+
+        self.hideLoader();
 
         self.reloadClicks();
     };
 
     this.clickFolder = function () {
+        self.showLoader();
 
         var path = self.buildPathFile($(this).attr("data-file"));
 
-        var bucket = $("#bucket").html();
+        var bucket = $("#bucket").attr("data-bucket");
 
         if (self.listObjects(bucket, path) == false) {
             return false;
@@ -78,10 +106,14 @@ var Main = function() {
 
         $("#path").val(path);
 
+        self.hideLoader();
+
         self.reloadClicks();
     };
 
     this.clickBack = function () {
+        self.showLoader();
+
         var pathSelector = $("#path");
 
         var path = pathSelector.val();
@@ -92,24 +124,29 @@ var Main = function() {
 
         path = paths.join("/");
 
-        if (self.listObjects($("#bucket").html(), path) == false) {
+        if (self.listObjects($("#bucket").attr("data-bucket"), path) == false) {
             return false;
         }
 
         pathSelector.val(path);
 
+        self.hideLoader();
+
         self.reloadClicks();
     };
 
     this.clickFile = function () {
+        self.showLoader();
 
         var connectionId = $("#connectionId").val();
 
         var path = self.buildPathFile($(this).attr("data-file"));
 
-        var bucket = $("#bucket").html();
+        var bucket = $("#bucket").attr("data-bucket");
 
         var file = self.getApiObject(connectionId, path, bucket);
+
+        self.hideLoader();
 
         downloadURL(BASE_PATH + '/download.php?file=' + file);
     };
@@ -143,7 +180,9 @@ var Main = function() {
     };
 
     this.pathKeyDown = function () {
-        var bucket = $("#bucket").html();
+        self.showLoader();
+
+        var bucket = $("#bucket").attr("data-bucket");
         var path = $("#path");
 
         if (!bucket || bucket == "-") {
@@ -152,6 +191,8 @@ var Main = function() {
         }
 
         self.listObjects(bucket, path.val());
+
+        self.hideLoader();
 
         self.reloadClicks();
     };
@@ -167,6 +208,8 @@ var Main = function() {
 
         if (typeof size == "undefined") {
             size = '-';
+        } else {
+            size += ' Bytes';
         }
 
         if (typeof lastModified == "undefined") {
@@ -220,6 +263,14 @@ var Main = function() {
         }
 
         return path;
+    };
+
+    this.showLoader = function() {
+        $("#loader").show();
+    };
+
+    this.hideLoader = function() {
+        $("#loader").hide();
     };
 
     this.showModalNewAuthentication = function () {
