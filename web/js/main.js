@@ -34,7 +34,7 @@ var Main = function() {
     };
 
     this.connect = function (connectionId) {
-        self.showLoader();
+        self.showLoader("Connecting....");
 
         $("#bucket").attr("data-bucket", "").html("-");
         $("#return-buckets").hide();
@@ -50,6 +50,7 @@ var Main = function() {
         var buckets = self.getApiBuckets(connectionId);
 
         if (buckets == false) {
+            self.hideLoader();
             alert('Could not fetch buckets! Verify that your authentications are correct.');
             return false;
         }
@@ -101,6 +102,7 @@ var Main = function() {
         var bucket = $("#bucket").attr("data-bucket");
 
         if (self.listObjects(bucket, path) == false) {
+            self.hideLoader();
             return false;
         }
 
@@ -125,6 +127,7 @@ var Main = function() {
         path = paths.join("/");
 
         if (self.listObjects($("#bucket").attr("data-bucket"), path) == false) {
+            self.hideLoader();
             return false;
         }
 
@@ -136,7 +139,7 @@ var Main = function() {
     };
 
     this.clickFile = function () {
-        self.showLoader();
+        self.showLoader("Downloading...");
 
         var connectionId = $("#connectionId").val();
 
@@ -265,12 +268,14 @@ var Main = function() {
         return path;
     };
 
-    this.showLoader = function() {
+    this.showLoader = function(message) {
         $("#loader").show();
+        $("#loader-message").html(message);
     };
 
     this.hideLoader = function() {
         $("#loader").hide();
+        $("#loader-message").html("");
     };
 
     this.showModalNewAuthentication = function () {

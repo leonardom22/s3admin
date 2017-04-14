@@ -29,6 +29,8 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
 
 <div id="loader" style="display: none">
     <img src="web/img/loader.gif" width="100">
+    <br/>
+    <p id="loader-message"></p>
 </div>
 
 <input type="hidden" id="connectionId" value="">
@@ -93,13 +95,13 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
+                <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                <li><a href="#about"><span class="glyphicon glyphicon-info-sign"></span> About</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Authentications<span class="caret"></span></a>
+                       aria-expanded="false"><span class="glyphicon glyphicon-cloud"></span> Authentications<span class="caret"></span></a>
                     <ul class="dropdown-menu" id="dropdown-authentications">
-                        <li><a href="#" id="modal-new-authentication">New</a></li>
+                        <li><a href="#" id="modal-new-authentication"><span class="glyphicon glyphicon-plus"></span> New</a></li>
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">All endorsements</li>
                     </ul>
