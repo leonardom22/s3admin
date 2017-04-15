@@ -247,8 +247,6 @@ var Main = function() {
         for (var i = 0; i < files.length; i++) {
             fileName = self.uploadFileToTemp(files[i]);
 
-            console.log(fileName);
-
             if (fileName) {
                 filesUploaded.push(fileName);
             }
