@@ -63,6 +63,22 @@ class Storage
     }
 
     /**
+     * @param $folder
+     *
+     * @return string
+     */
+    public static function createFolder($folder)
+    {
+        $path = self::getPathDefault() . DS . $folder . DS;
+
+        if (!is_dir($path)) {
+            mkdir($path);
+        }
+
+        return $path;
+    }
+
+    /**
      * @return string
      */
     public static function getPathDefault()

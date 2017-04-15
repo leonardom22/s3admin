@@ -95,8 +95,6 @@ class Listing extends Action\ConnectionRequired
      */
     private function getName($string)
     {
-        $string = str_replace(trim($this->body['path'], '/'), '', $string);
-
         $name = end(explode('/', trim($string, '/')));
 
         if (empty($name)) {

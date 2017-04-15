@@ -16,6 +16,14 @@ var Main = function() {
 
         $("#connect").click(self.connect);
 
+        $("#refresh").click(self.pathKeyDown);
+
+        $("#link-upload").click(self.uploadModal);
+
+        $("#file").change(function() {
+            self.traverseFiles(this.files);
+        });
+
         $("#return-buckets").click(function () {
             var connectionId = $("#connectionId").val();
 
@@ -70,6 +78,8 @@ var Main = function() {
         }
 
         container.html(html);
+
+        $("#connected-in").html("Connected in \"" + $("#name").val() + "\"");
 
         self.reloadClicks();
 
@@ -151,7 +161,7 @@ var Main = function() {
 
         self.hideLoader();
 
-        downloadURL(BASE_PATH + '/download.php?file=' + file);
+        downloadURL(BASE_PATH + '/file.php?action=download&file=' + file);
     };
 
     this.listObjects = function (bucket, path) {
@@ -189,7 +199,9 @@ var Main = function() {
         var path = $("#path");
 
         if (!bucket || bucket == "-") {
+            self.hideLoader();
             path.val("");
+            alert("You must be in some bucket!");
             return false;
         }
 
@@ -198,6 +210,106 @@ var Main = function() {
         self.hideLoader();
 
         self.reloadClicks();
+    };
+
+    this.uploadModal = function () {
+
+        if (!$("#connectionId").val()) {
+            alert("You must be connected in to upload!");
+            return false;
+        }
+
+        var bucket = $("#bucket").attr("data-bucket");
+
+        if (!bucket) {
+            alert("You must be in some bucket!");
+            return false;
+        }
+
+        $("#form-upload-file").show();
+        $("#form-upload-path").hide();
+        $("#qty-uploaded-files").html("");
+        $("#upload-bucket").html(bucket);
+        $("#button-upload-file").attr("disabled", true);
+
+        $('#upload').modal('show');
+    };
+
+    this.traverseFiles = function(files) {
+
+        if (typeof files == "undefined") {
+            return false;
+        }
+
+        var filesUploaded = [],
+            fileName;
+
+        for (var i = 0; i < files.length; i++) {
+            fileName = self.uploadFileToTemp(files[i]);
+
+            console.log(fileName);
+
+            if (fileName) {
+                filesUploaded.push(fileName);
+            }
+        }
+
+        $("#filesUploadArr").val(JSON.stringify(filesUploaded));
+
+        $("#qty-uploaded-files").html(filesUploaded.length + " uploaded files.");
+
+        $("#form-upload-file").hide();
+        $("#form-upload-path").show();
+        $("#upload-path").val($("#path").val());
+
+        $("#button-upload-file")
+            .attr("disabled", false)
+            .click(self.uploadFilesToS3);
+
+        $("#file").val("");
+    };
+
+    this.uploadFileToTemp = function(file) {
+
+        var formData = new FormData();
+        formData.append('file', file);
+
+        var fileName = '';
+
+        $.ajax({
+            'url': BASE_PATH + '/file.php?action=upload',
+            'cache': false,
+            'contentType': false,
+            'processData': false,
+            'data': formData,
+            'type': 'POST',
+            'async': false,
+            'success': function(data) {
+                fileName = data;
+            }
+        });
+
+        return fileName;
+    };
+
+    this.uploadFilesToS3 = function () {
+        self.showLoader("Uploading Files");
+
+        var connectionId = $("#connectionId").val();
+        var bucket = $("#bucket").attr("data-bucket");
+        var path = $("#upload-path").val();
+        var objects = JSON.parse($("#filesUploadArr").val());
+
+        var uploaded = self.postApiCreateObject(connectionId, bucket, path, objects);
+
+        self.hideLoader();
+
+        if (uploaded == false) {
+            alert("Could not send files");
+        } else {
+            $('#upload').modal('hide');
+            self.pathKeyDown();
+        }
     };
 
     this.reloadClicks = function () {
@@ -549,6 +661,48 @@ var Main = function() {
         return apiReturn['file'];
     };
 
+    this.postApiCreateObject = function(connectionId, bucket, path, objects) {
+        if (
+            typeof connectionId == "undefined"
+            ||
+            typeof path == "undefined"
+            ||
+            typeof bucket == "undefined"
+            ||
+            typeof objects == "undefined"
+        ) {
+            return false;
+        }
+
+        var dataSend = {
+            'path': path,
+            'bucket': bucket,
+            'files': objects
+        };
+
+        var success = false;
+
+        $.ajax({
+            'url': BASE_PATH + '/api/objects/create/' + connectionId,
+            'dataType': 'json',
+            'type': 'POST',
+            'data': JSON.stringify(dataSend),
+            'contentType': 'application/json',
+            'async': false,
+            'success': function (data) {
+                success = true;
+            },
+            'error': function (xhr) {
+                console.log(xhr.responseText);
+                if (xhr.status == 200) {
+                    success = true;
+                }
+            }
+        });
+
+        return success;
+    };
+
     this.construct();
 };
 
@@ -574,5 +728,12 @@ function downloadURL(url) {
     }
     iframe.src = url;
 }
+
+function clearForm() {
+    $(':input').not(':button, :submit, :reset, :checkbox, :radio').val('');
+    $(':checkbox, :radio').prop('checked', false);
+}
+
+clearForm();
 
 new Main();

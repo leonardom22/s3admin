@@ -24,11 +24,7 @@ class Retrieve extends Action\ConnectionRequired
             return $validated;
         }
 
-        $path = Core\Storage::getPathDefault() . DS . 'tmp' . DS;
-
-        if (!is_dir($path)) {
-            mkdir($path);
-        }
+        $path = Core\Storage::createFolder('tmp');
 
         $fileName = end(explode('/', $this->body['file']));
 

@@ -17,7 +17,7 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
     <meta name="description" content="">
     <meta name="author" content="Leonardo Oliveira <leonardo.malia@live.com>">
 
-    <title>S3 Admin</title>
+    <title>Amazon S3 Admin</title>
 
     <link href="web/css/bootstrap.min.css" rel="stylesheet">
     <link href="web/css/bootstrap-theme.min.css" rel="stylesheet">
@@ -88,6 +88,40 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
     </div>
 </div>
 
+<div class="modal fade" id="upload" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="authenticate-modal-name">Upload File</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="filesUploadArr" value="">
+                <div class="form-group">
+                    <label class="control-label">Bucket</label>
+                    <div>
+                        <p class="form-control-static" id="upload-bucket"></p>
+                    </div>
+                </div>
+                <div class="form-group" id="form-upload-path" style="display: none;">
+                    <label for="upload-path">Path</label>
+                    <input type="text" class="form-control" id="upload-path" placeholder="Path">
+                </div>
+                <div class="form-group" id="form-upload-file">
+                    <label for="file">File input</label>
+                    <input type="file" id="file" multiple="">
+                </div>
+                <p class="text-center" id="qty-uploaded-files"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="button-upload-file" disabled>Confirm and send <span class="glyphicon glyphicon-open" aria-hidden="true"></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
@@ -95,7 +129,7 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                <li class="active"><a href="index.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                 <li><a href="#about"><span class="glyphicon glyphicon-info-sign"></span> About</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -106,6 +140,9 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
                         <li class="dropdown-header">All endorsements</li>
                     </ul>
                 </li>
+                <li><a href="#" id="link-upload"><span class="glyphicon glyphicon-open"></span> Upload</a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-folder-open"></span> New Folder</a></li>
+                <li><a href="#" id="refresh"><span class="glyphicon glyphicon-refresh"></span> Refresh</a></li>
             </ul>
         </div>
     </div>
@@ -114,6 +151,7 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
 
     <div class="page-header">
         <h1>Files</h1>
+        <h5 id="connected-in"></h5>
     </div>
 
     <div class="input-group">
