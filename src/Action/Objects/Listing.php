@@ -40,6 +40,8 @@ class Listing extends Action\ConnectionRequired
             return Response\Creator::error($e->getMessage());
         }
 
+        $endFolder = end(explode('/', trim($prefix, '/')));
+
         $data = [];
 
         $commonPrefixes = $objects->get('CommonPrefixes');
@@ -63,6 +65,16 @@ class Listing extends Action\ConnectionRequired
             $name = $this->getName($content['Key']);
 
             if ($name == false) {
+                continue;
+            }
+
+            if (
+                !empty($endFolder)
+                &&
+                $name == $endFolder
+                &&
+                $content['Size'] == 0
+            ) {
                 continue;
             }
 

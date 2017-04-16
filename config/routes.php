@@ -16,6 +16,11 @@ return [
             'action' => 'Objects/Create'
         ]
     ],
+    '/objects/delete/{connectionId}' => [
+        'POST' => [
+            'action' => 'Objects/Delete'
+        ]
+    ],
     '/buckets/{connectionId}' => [
         'GET' => [
             'action' => 'Buckets/Retrieve'

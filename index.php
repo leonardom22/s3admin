@@ -169,6 +169,7 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
                     <th>File</th>
                     <th>Last modified</th>
                     <th>Size</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody id="body-files">

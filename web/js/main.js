@@ -164,6 +164,33 @@ var Main = function() {
         downloadURL(BASE_PATH + '/file.php?action=download&file=' + file);
     };
 
+    this.clickDeleteFile = function() {
+        var file = $(this).attr("data-file");
+
+        if (!confirm("You are about to delete the file (" + file + "). Are you sure?")) {
+            return false;
+        }
+
+        self.showLoader("Deleting...");
+
+        var connectionId = $("#connectionId").val();
+        var bucket = $("#bucket").attr("data-bucket");
+        var path = self.buildPathFile($(this).attr("data-file"));
+
+
+        var deleted = self.postApiDeleteObject(connectionId, bucket, path);
+
+        self.hideLoader();
+
+        if (deleted == true) {
+            alert("Deleted successfully");
+            self.pathKeyDown();
+        } else {
+            alert("Could not delete file");
+        }
+
+    };
+
     this.listObjects = function (bucket, path) {
 
         if (
@@ -315,6 +342,7 @@ var Main = function() {
         $(".bucket").click(self.clickBucket);
         $(".back").click(self.clickBack);
         $(".file").click(self.clickFile);
+        $(".delete-file").click(self.clickDeleteFile);
     };
 
     this.buildTrFiles = function (type, file, lastModified, size) {
@@ -356,8 +384,27 @@ var Main = function() {
         html += "<td><a href='#' class='" + classStr + "' data-file='" + file + "'>" + image + " " + file + "</a></td>\n";
         html += "<td>" + lastModified + "</td>\n";
         html += "<td>" + size + "</td>\n";
+
+        var actions = '';
+        if (type == 'file') {
+            actions = self.buildActionsDropdown(type + '-' + file, file);
+        }
+
+        html += "<td>" + actions + "</td>\n";
+
         html += "</tr>\n";
         return html;
+    };
+
+    this.buildActionsDropdown = function (id, file) {
+        return '<div class="dropdown">' +
+            '<button class="btn btn-default btn-xs dropdown-toggle" type="button" id="' + id + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
+            'Actions ' +
+            '<span class="caret"></span>' +
+            '</button>' +
+            '<ul class="dropdown-menu" aria-labelledby="' + id + '"> ' +
+            '<li><a href="#" class="delete-file" data-file="' + file + '">Delete</a></li> ' +
+            '</ul> </div>';
     };
 
     this.buildPathFile = function (file) {
@@ -692,6 +739,44 @@ var Main = function() {
             },
             'error': function (xhr) {
                 console.log(xhr.responseText);
+                if (xhr.status == 200) {
+                    success = true;
+                }
+            }
+        });
+
+        return success;
+    };
+
+    this.postApiDeleteObject = function(connectionId, bucket, file) {
+        if (
+            typeof connectionId == "undefined"
+            ||
+            typeof file == "undefined"
+            ||
+            typeof bucket == "undefined"
+        ) {
+            return false;
+        }
+
+        var dataSend = {
+            'bucket': bucket,
+            'file': file
+        };
+
+        var success = false;
+
+        $.ajax({
+            'url': BASE_PATH + '/api/objects/delete/' + connectionId,
+            'dataType': 'json',
+            'type': 'POST',
+            'data': JSON.stringify(dataSend),
+            'contentType': 'application/json',
+            'async': false,
+            'success': function () {
+                success = true;
+            },
+            'error': function (xhr) {
                 if (xhr.status == 200) {
                     success = true;
                 }
