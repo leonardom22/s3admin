@@ -350,7 +350,7 @@ var Main = function() {
         if (typeof size == "undefined") {
             size = '-';
         } else {
-            size += ' Bytes';
+            size = filesize(size);
         }
 
         if (typeof lastModified == "undefined") {

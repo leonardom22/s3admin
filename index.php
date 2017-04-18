@@ -186,6 +186,7 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
     var BASE_PATH = '<?=PATH_WEB?>';
 </script>
 <script src="web/js/bootstrap.min.js"></script>
+<script src="web/js/filesize.js"></script>
 <script src="web/js/main.js"></script>
 
 </body>
