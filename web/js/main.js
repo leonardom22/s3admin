@@ -20,6 +20,8 @@ var Main = function() {
 
         $("#link-upload").click(self.uploadModal);
 
+        $("#load-more").click(self.loadMore);
+
         $("#file").change(function() {
             self.traverseFiles(this.files);
         });
@@ -37,6 +39,19 @@ var Main = function() {
             e.which = e.which || e.keyCode;
             if (e.which == 13) {
                 self.pathKeyDown();
+            }
+        });
+
+        self.scrollBottomEvent();
+    };
+
+    this.scrollBottomEvent = function() {
+        $(window).scroll(function() {
+            if($(window).scrollTop() + $(window).height() == $(document).height()) {
+                var loadMoreSelector = $("#load-more");
+                if (loadMoreSelector.is(":visible")) {
+                    loadMoreSelector.click();
+                }
             }
         });
     };
@@ -201,6 +216,12 @@ var Main = function() {
             return false;
         }
 
+        $("#load-more")
+            .attr('data-next-marker', false)
+            .attr('data-bucket', false)
+            .attr('data-path', false)
+            .hide();
+
         var connectionId = $("#connectionId").val();
 
         var objects = self.getApiListObjects(connectionId, bucket, path);
@@ -209,14 +230,51 @@ var Main = function() {
 
         container.html("");
 
-        var x, object, html = self.buildTrFiles('back', '..');
-        for (x in objects) {
-            object = objects[x];
+        var html = self.buildTrFiles('back', '..');
 
-            html += self.buildTrFiles(object['type'], object['name'], object['lastModified'], object['size']);
+        $.each(objects['registers'], function(index, value) {
+            html += self.buildTrFiles(value['type'], value['name'], value['lastModified'], value['size']);
+        });
+
+        if (objects['nextMarker']) {
+            $("#load-more")
+                .attr('data-next-marker', objects['nextMarker'])
+                .attr('data-bucket', bucket)
+                .attr('data-path', path)
+                .show();
         }
 
         container.html(html);
+    };
+
+    this.loadMore = function() {
+
+        self.showLoader();
+
+        var connectionId = $("#connectionId").val();
+
+        var objects = self.getApiListObjects(
+            connectionId,
+            $(this).attr('data-bucket'),
+            $(this).attr('data-path'),
+            $(this).attr('data-next-marker')
+        );
+
+        var container = $('#body-files');
+
+        var html = container.html();
+
+        $.each(objects['registers'], function(index, value) {
+            html += self.buildTrFiles(value['type'], value['name'], value['lastModified'], value['size']);
+        });
+
+        $(this)
+            .attr('data-next-marker', objects['nextMarker']);
+
+        container.html(html);
+
+        self.hideLoader();
+
     };
 
     this.pathKeyDown = function () {
@@ -631,7 +689,7 @@ var Main = function() {
         return buckets;
     };
 
-    this.getApiListObjects = function (connectionId, bucket, path) {
+    this.getApiListObjects = function (connectionId, bucket, path, marker) {
 
         if (
             typeof connectionId == "undefined"
@@ -647,7 +705,8 @@ var Main = function() {
 
         var dataSend = {
             'bucket': bucket,
-            'path': path
+            'path': path,
+            'marker': marker
         };
 
         var objects = null;

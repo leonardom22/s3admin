@@ -130,7 +130,7 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="index.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                <li><a href="#about"><span class="glyphicon glyphicon-info-sign"></span> About</a></li>
+                <li><a href="https://github.com/leonardom22/s3admin" target="_blank"><span class="glyphicon glyphicon-info-sign"></span> About</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false"><span class="glyphicon glyphicon-cloud"></span> Authentications<span class="caret"></span></a>
@@ -176,6 +176,8 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
 
                 </tbody>
             </table>
+
+            <button type="button" id="load-more" class="btn btn-default" style="display: none; float:right; margin-right: 50%;">Load more</button>
         </div>
     </div>
 
