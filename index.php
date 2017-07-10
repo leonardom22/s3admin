@@ -141,7 +141,6 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
                     </ul>
                 </li>
                 <li><a href="#" id="link-upload"><span class="glyphicon glyphicon-open"></span> Upload</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-folder-open"></span> New Folder</a></li>
                 <li><a href="#" id="refresh"><span class="glyphicon glyphicon-refresh"></span> Refresh</a></li>
             </ul>
         </div>
