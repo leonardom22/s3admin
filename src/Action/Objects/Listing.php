@@ -32,7 +32,8 @@ class Listing extends Action\ConnectionRequired
             $objects = $this->connection->ListObjects([
                 'Bucket' => $this->body['bucket'],
                 'Delimiter' => '/',
-                'Prefix' => $prefix
+                'Prefix' => $prefix,
+                'Marker' => $this->body['marker']
             ]);
 
         } catch (\Exception $e) {
@@ -42,7 +43,9 @@ class Listing extends Action\ConnectionRequired
 
         $endFolder = end(explode('/', trim($prefix, '/')));
 
-        $data = [];
+        $data = [
+            'nextMarker' => $objects['NextMarker']
+        ];
 
         $commonPrefixes = $objects->get('CommonPrefixes');
 
@@ -54,7 +57,7 @@ class Listing extends Action\ConnectionRequired
                 continue;
             }
 
-            $data[] = [
+            $data['registers'][] = [
                 'name' => $name,
                 'type' => 'folder'
             ];
@@ -78,7 +81,7 @@ class Listing extends Action\ConnectionRequired
                 continue;
             }
 
-            $data[] = [
+            $data['registers'][] = [
                 'name' => $name,
                 'lastModified' => $content['LastModified']->format('Y-m-d H:i:s'),
                 'size' => $content['Size'],
