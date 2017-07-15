@@ -4,5 +4,3 @@ php:
   - 7.0
 install:
   - composer install
-after_success:
-  - git tag -a v1.0.$TRAVIS_BUILD_NUMBER -m "Version v1.0.$TRAVIS_BUILD_NUMBER" && git push origin $TRAVIS_BRANCH
