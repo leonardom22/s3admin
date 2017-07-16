@@ -22,6 +22,10 @@ var Main = function() {
 
         $("#load-more").click(self.loadMore);
 
+        $("#check-all").click(self.checkAll);
+
+        $(".batch-action").click(self.batchAction);
+
         $("#file").change(function() {
             self.traverseFiles(this.files);
         });
@@ -54,6 +58,23 @@ var Main = function() {
                 }
             }
         });
+    };
+
+    this.checkAll = function() {
+
+        var selector = $(".check-object");
+
+        if ($(this).is(":checked")) {
+            selector.prop("checked", true);
+        } else {
+            selector.prop("checked", false);
+        }
+    };
+
+    this.checkObject = function() {
+        if (!$(this).is(":checked")) {
+            $("#check-all").prop("checked", false);
+        }
     };
 
     this.connect = function (connectionId) {
@@ -101,6 +122,33 @@ var Main = function() {
         self.hideLoader();
 
         $('#authenticate').modal('hide');
+    };
+
+    this.batchAction = function() {
+
+        var selector = $(".check-object:checked");
+
+        if (selector.length < 1) {
+            alert("No file selected!");
+            return false;
+        }
+
+        var files = [];
+        selector.each(function () {
+            var file = $(this).closest('tr').attr('data-file');
+
+            files.push(self.buildPathFile(file));
+        });
+
+        switch ($(this).attr("id")) {
+            case 'delete':
+                self.batchDeleteFile(files);
+                break;
+            default:
+                alert("Action not found.");
+        }
+
+        $("#check-all").prop("checked", false);
     };
 
     this.clickBucket = function () {
@@ -204,6 +252,29 @@ var Main = function() {
             alert("Could not delete file");
         }
 
+    };
+
+    this.batchDeleteFile = function(files) {
+
+        if (!confirm('Several files will be erased. Are you sure?')) {
+            return false;
+        }
+
+        self.showLoader("Deleting...");
+
+        var connectionId = $("#connectionId").val();
+        var bucket = $("#bucket").attr("data-bucket");
+
+        var deleted = self.postApiBatchDeleteObjects(connectionId, bucket, files);
+
+        self.hideLoader();
+
+        if (deleted == true) {
+            alert("Deleted successfully");
+            self.pathKeyDown();
+        } else {
+            alert("Could not delete file");
+        }
     };
 
     this.listObjects = function (bucket, path) {
@@ -401,6 +472,7 @@ var Main = function() {
         $(".back").click(self.clickBack);
         $(".file").click(self.clickFile);
         $(".delete-file").click(self.clickDeleteFile);
+        $(".check-object").click(self.checkObject);
     };
 
     this.buildTrFiles = function (type, file, lastModified, size) {
@@ -415,27 +487,33 @@ var Main = function() {
             lastModified = '-';
         }
 
-        var html = "<tr>\n";
-        html += "<td>-</td>\n";
+        var html = "<tr data-file=\"" + file + "\">\n";
+        html += "<td>";
 
         var image = '', classStr = '';
         switch (type) {
             case 'bucket':
                 image = 'bucket.png';
                 classStr = 'bucket';
+                html += '-';
                 break;
             case 'folder':
                 image = 'folder.png';
                 classStr = 'folder';
+                html += '-';
                 break;
             case 'back':
                 image = 'back.png';
                 classStr = 'back';
+                html += '-';
                 break;
             default:
                 image = 'file.png';
                 classStr = 'file';
+                html += '<input type="checkbox" class="check-object">';
         }
+
+        html += "</td>\n";
 
         image = '<img src="web/img/' + image + '">';
 
@@ -827,6 +905,43 @@ var Main = function() {
 
         $.ajax({
             'url': BASE_PATH + '/api/objects/delete/' + connectionId,
+            'dataType': 'json',
+            'type': 'POST',
+            'data': JSON.stringify(dataSend),
+            'contentType': 'application/json',
+            'async': false,
+            'success': function () {
+                success = true;
+            },
+            'error': function (xhr) {
+                if (xhr.status == 200) {
+                    success = true;
+                }
+            }
+        });
+
+        return success;
+    };
+
+    this.postApiBatchDeleteObjects = function(connectionId, bucket, files) {
+
+        if (
+            typeof connectionId == "undefined" ||
+            typeof files == "undefined" ||
+            typeof bucket == "undefined"
+        ) {
+            return false;
+        }
+
+        var dataSend = {
+            'bucket': bucket,
+            'files': files
+        };
+
+        var success = false;
+
+        $.ajax({
+            'url': BASE_PATH + '/api/objects/batch_delete/' + connectionId,
             'dataType': 'json',
             'type': 'POST',
             'data': JSON.stringify(dataSend),

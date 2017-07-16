@@ -164,11 +164,23 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th width="20">
+                        <input type="checkbox" id="check-all">
+                    </th>
                     <th>File</th>
-                    <th>Last modified</th>
-                    <th>Size</th>
-                    <th>Actions</th>
+                    <th width="250">Last modified</th>
+                    <th width="100">Size</th>
+                    <th width="120">
+                        <div class="dropdown">
+                            <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Batch Actions
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" class="batch-action" id="delete">Delete</a></li>
+                            </ul>
+                        </div>
+                    </th>
                 </tr>
                 </thead>
                 <tbody id="body-files">
