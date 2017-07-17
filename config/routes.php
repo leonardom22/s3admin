@@ -21,6 +21,11 @@ return [
             'action' => 'Objects/Delete'
         ]
     ],
+    '/objects/batch_delete/{connectionId}' => [
+        'POST' => [
+            'action' => 'Objects/BatchDelete'
+        ]
+    ],
     '/buckets/{connectionId}' => [
         'GET' => [
             'action' => 'Buckets/Retrieve'
