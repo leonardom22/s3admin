@@ -6,7 +6,7 @@ use App\Contract\Action;
 use App\Response;
 
 /**
- * Class BatchDelete
+ * Recurso responsável por efetuar exclusão massiva de arquivos.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */

@@ -9,7 +9,7 @@ use App\Enum\HttpStatusCode;
 use App\Response;
 
 /**
- * Class Register
+ * Recurso responsável por efetuar o cadastro/atualização das autenticações.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
@@ -73,6 +73,14 @@ class Register extends Contract\Action
         ];
     }
 
+    /**
+     * Verifica se a autenticação já existe cadastrada.
+     *
+     * @param array $authentications
+     * @param string $identifier
+     *
+     * @return integer|bool
+     */
     private function authenticationExists($authentications, $identifier)
     {
         foreach ($authentications as $index => $authentication) {

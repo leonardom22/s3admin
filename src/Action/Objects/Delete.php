@@ -6,7 +6,7 @@ use App\Contract\Action;
 use App\Response;
 
 /**
- * Class Delete
+ * Recurso responsável por exclusão de arquivos.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */

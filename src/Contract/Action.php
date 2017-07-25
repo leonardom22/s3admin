@@ -5,9 +5,10 @@ namespace App\Contract;
 use App\Enum;
 use App\Core;
 use App\Response;
+use App\Contract;
 
 /**
- * Interface Action
+ * Classe abstrata que define as actions.
  * 
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
@@ -17,7 +18,9 @@ abstract class Action
     public $body;
 
     /**
-     * @return \App\Contract\Response|bool
+     * Função chamada antes da execução da ação.
+     *
+     * @return Contract\Response|bool
      */
     public function startup()
     {
@@ -54,6 +57,8 @@ abstract class Action
     public abstract function execute(array $parameters = []);
 
     /**
+     * Campos obrigatórios.
+     *
      * @return array
      */
     public abstract function requiredFields();

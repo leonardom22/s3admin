@@ -7,7 +7,7 @@ use App\Response;
 use App\Core;
 
 /**
- * Class Create
+ * Recurso responsável criar novos arquivos.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
@@ -69,6 +69,8 @@ class Create extends Action\ConnectionRequired
     }
 
     /**
+     * Efetua requisição de envio de arquivo para o S3.
+     *
      * @param string $key
      * @param string $sourceFile
      *

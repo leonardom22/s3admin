@@ -8,15 +8,13 @@ use App\Response;
 use App\Core;
 
 /**
- * Class Application
+ * Classe responsável por iniciar a aplicação.
  * 
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
 class Application
 {
     /**
-     * Application constructor.
-     * 
      * @param string $appDir
      */
     public function __construct($appDir)
@@ -25,6 +23,8 @@ class Application
     }
 
     /**
+     * Inicia a aplicação.
+     *
      * @return Core\Response
      */
     public function start()
@@ -55,6 +55,8 @@ class Application
     }
 
     /**
+     * Efetua a chamada da ação.
+     *
      * @param string $route
      * @param array $parameters
      *

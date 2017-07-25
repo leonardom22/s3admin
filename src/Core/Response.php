@@ -6,7 +6,7 @@ use App\Contract;
 use App\Converter;
 
 /**
- * Class Response
+ * Classe responsável por montar a resposta para o cliente.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
@@ -16,8 +16,6 @@ class Response
     private $response;
 
     /**
-     * Response constructor.
-     * 
      * @param Contract\Response|null $response
      */
     public function __construct(Contract\Response $response = null)
@@ -26,6 +24,8 @@ class Response
     }
 
     /**
+     * Retorna o conteúdo da resposta.
+     *
      * @return string
      */
     public function getContent()
@@ -37,6 +37,8 @@ class Response
     }
 
     /**
+     * Define a resposta.
+     *
      * @param Contract\Response $response
      *
      * @return Response

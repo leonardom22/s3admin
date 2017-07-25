@@ -3,7 +3,7 @@
 namespace App\Element;
 
 /**
- * Class Authentication
+ * Elemento responsável por modelar uma autenticação da aplicação.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
@@ -22,6 +22,8 @@ class Authentication
     private $region;
 
     /**
+     * Retorna o identificador da autenticação.
+     *
      * @return int
      */
     public function getIdentifier()
@@ -30,7 +32,10 @@ class Authentication
     }
 
     /**
+     * Define o identificador da autenticação.
+     *
      * @param int $identifier
+     *
      * @return Authentication
      */
     public function setIdentifier($identifier)
@@ -40,6 +45,8 @@ class Authentication
     }
 
     /**
+     * Retorna a chave.
+     *
      * @return string
      */
     public function getKey()
@@ -48,7 +55,10 @@ class Authentication
     }
 
     /**
+     * Define a chava da autenticação.
+     *
      * @param string $key
+     *
      * @return Authentication
      */
     public function setKey($key)
@@ -58,6 +68,8 @@ class Authentication
     }
 
     /**
+     * Retorna a chave secreta da autenticação.
+     *
      * @return string
      */
     public function getSecret()
@@ -66,7 +78,10 @@ class Authentication
     }
 
     /**
+     * Define a chave secreta.
+     *
      * @param string $secret
+     *
      * @return Authentication
      */
     public function setSecret($secret)
@@ -76,6 +91,8 @@ class Authentication
     }
 
     /**
+     * Retorna a região.
+     *
      * @return string
      */
     public function getRegion()
@@ -84,7 +101,10 @@ class Authentication
     }
 
     /**
+     * Define a região.
+     *
      * @param string $region
+     *
      * @return Authentication
      */
     public function setRegion($region)

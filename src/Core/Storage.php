@@ -5,13 +5,15 @@ namespace App\Core;
 use App\Contract;
 
 /**
- * Class Storage
+ * Classe responsável por manipular os arquivos da aplicação.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
 class Storage
 {
     /**
+     * Salva um arquivo.
+     *
      * @param string $file
      * @param string $content
      *
@@ -40,6 +42,8 @@ class Storage
     }
 
     /**
+     * Retorna o conteúdo de um arquivo.
+     *
      * @param string $file
      * @param Contract\Converter|null $converter
      *
@@ -63,7 +67,9 @@ class Storage
     }
 
     /**
-     * @param $folder
+     * Cria uma pasta.
+     *
+     * @param string $folder
      *
      * @return string
      */
@@ -79,6 +85,8 @@ class Storage
     }
 
     /**
+     * Retorna o caminho padrão.
+     *
      * @return string
      */
     public static function getPathDefault()
