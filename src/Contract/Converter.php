@@ -3,7 +3,7 @@
 namespace App\Contract;
 
 /**
- * Interface Converter
+ * Interface que define os conversores.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
@@ -19,7 +19,7 @@ interface Converter
     /**
      * @param mixed $data
      *
-     * @return mixed
+     * @return array
      */
     public static function toArray($data);
 }

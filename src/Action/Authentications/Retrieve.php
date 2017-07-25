@@ -8,7 +8,7 @@ use App\Core;
 use App\Response;
 
 /**
- * Class Retrieve
+ * Recurso responsável por retornar as autenticações.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */

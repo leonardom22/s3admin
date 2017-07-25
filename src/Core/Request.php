@@ -6,7 +6,7 @@ use App\Converter\Json;
 use App\Enum;
 
 /**
- * Class Request
+ * Classe responsável por resgatar as informações das requisições.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
@@ -22,7 +22,9 @@ class Request
     public static $body;
 
     /**
-     * @param $name
+     * Retorna o conteúdo de um header.
+     *
+     * @param string $name
      *
      * @return string|null
      */
@@ -38,6 +40,8 @@ class Request
     }
 
     /**
+     * Retorna todos os headers.
+     *
      * @return array|false
      */
     public static function getHeaders()
@@ -50,6 +54,8 @@ class Request
     }
 
     /**
+     * Retorna o método da requisição.
+     *
      * @return Enum\HttpMethod
      */
     public static function getMethod()
@@ -68,6 +74,8 @@ class Request
     }
 
     /**
+     * Retorna o conteúdo da requisição.
+     *
      * @return array
      */
     public static function getBody()
@@ -87,6 +95,14 @@ class Request
         return self::$body;
     }
 
+    /**
+     * Efetua a validação do conteúdo da requisição.
+     *
+     * @param array $fields
+     * @param array|null $body
+     *
+     * @return bool
+     */
     public static function validate($fields, array $body = null)
     {
         foreach ($fields as $field) {

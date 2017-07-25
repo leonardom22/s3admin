@@ -7,14 +7,16 @@ use App\Core;
 use App\Element;
 
 /**
- * Class Authentication
+ * Classe responsável por carregar as autenticações cadastradas.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
 class Authentication
 {
     /**
-     * @param $identifier
+     * Retorna uma autenticação cadastrada.
+     *
+     * @param string $identifier
      *
      * @return Element\Authentication|null
      */
@@ -32,6 +34,8 @@ class Authentication
     }
 
     /**
+     * Converte as autenticações em elementos.
+     *
      * @param array $authentication
      *
      * @return Element\Authentication

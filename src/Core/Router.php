@@ -5,7 +5,7 @@ namespace App\Core;
 use App\Exception;
 
 /**
- * Class Router
+ * Classe responsável pelas rotas da aplicação.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
@@ -15,10 +15,12 @@ class Router
     private $parameters;
 
     /**
-     * @return mixed
+     * Retorna a classe de acordo com a rota.
      *
      * @throws Exception\ResourceNotFound
      * @throws Exception\MethodNotAllowed
+     *
+     * @return string
      */
     public function getClassByRoute()
     {

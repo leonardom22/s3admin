@@ -52,6 +52,6 @@ abstract class ConnectionRequired extends Contract\Action
             return false;
         }
 
-        return Sdk::getInstance($authentication);
+        return Sdk::getS3Instance($authentication);
     }
 }

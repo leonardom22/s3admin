@@ -4,11 +4,15 @@ namespace App\Converter;
 
 use App\Contract;
 
+/**
+ * Conversor para Json.
+ *
+ * @author Leonardo Oliveira <leonardo.malia@live.com>
+ */
 class Json implements Contract\Converter
 {
     /**
-     * @param array $data
-     *
+     * @inheritDoc
      * @return string
      */
     public static function fromArray($data)
@@ -17,15 +21,18 @@ class Json implements Contract\Converter
     }
 
     /**
-     * @param string $data
-     *
-     * @return mixed
+     * @inheritDoc
      */
     public static function toArray($data)
     {
         return json_decode($data, true);
     }
-    
+
+    /**
+     * Retorna o tipo de conteúdo http.
+     *
+     * @return string
+     */
     public static function getContentType()
     {
         return 'application/json';

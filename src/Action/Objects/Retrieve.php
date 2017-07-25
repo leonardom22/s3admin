@@ -7,7 +7,7 @@ use App\Response;
 use App\Core;
 
 /**
- * Class Retrieve
+ * Recurso responsável por efetuar o download de arquivos.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */

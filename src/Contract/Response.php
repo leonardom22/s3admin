@@ -6,7 +6,7 @@ use App\Contract;
 use App\Enum;
 
 /**
- * Interface Response
+ * Abstrata que define os tipos de resposta.
  * 
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
@@ -44,10 +44,11 @@ abstract class Response
     }
 
     /**
+     * Retorna o conteúdo da resposta.
+     *
      * @param Contract\Converter $converter
      *
-     * @return mixed
-     * 
+     * @return string
      */
     public abstract function getContent($converter);
 }

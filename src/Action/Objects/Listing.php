@@ -6,7 +6,7 @@ use App\Contract\Action;
 use App\Response;
 
 /**
- * Class Listing
+ * Recurso responsável por listar arquivos.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
@@ -104,6 +104,8 @@ class Listing extends Action\ConnectionRequired
     }
 
     /**
+     * Retorna o nome do arquivo de acordo com o caminho completo.
+     *
      * @param string $string
      *
      * @return string

@@ -3,7 +3,7 @@
 namespace App\Core;
 
 /**
- * Class Config
+ * Classe responsável por incluir as configurações da aplicação.
  * 
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */

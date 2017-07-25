@@ -6,7 +6,7 @@ use App\Contract\Action;
 use App\Response;
 
 /**
- * Class Retrieve
+ * Recurso responsável por retornar os buckets da autenticação.
  *
  * @author Leonardo Oliveira <leonardo.malia@live.com>
  */
