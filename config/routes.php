@@ -26,6 +26,11 @@ return [
             'action' => 'Objects/BatchDelete'
         ]
     ],
+    '/objects/invalidate/{connectionId}' => [
+        'POST' => [
+            'action' => 'Objects/Invalidation'
+        ]
+    ],
     '/buckets/{connectionId}' => [
         'GET' => [
             'action' => 'Buckets/Retrieve'

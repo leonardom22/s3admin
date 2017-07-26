@@ -29,8 +29,6 @@ class BatchDelete extends Action\ConnectionRequired
 
         } catch (\Exception $e) {
 
-            printrx($e->getMessage());
-
             return Response\Creator::error($e->getMessage());
         }
 
