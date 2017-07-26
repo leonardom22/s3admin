@@ -3,6 +3,7 @@
 namespace App\Aws;
 
 use App\Element;
+use Aws\CloudFront\CloudFrontClient;
 use Aws\S3\S3Client;
 
 /**
@@ -13,28 +14,51 @@ use Aws\S3\S3Client;
 class Sdk
 {
     /** @var S3Client */
-    public static $instance;
+    public static $s3instance;
+
+    /** @var CloudFrontClient */
+    public static $cloudFrontInstance;
 
     /**
      * @param Element\Authentication|null $authentication
      *
      * @return S3Client
      */
-    public static function getInstance(Element\Authentication $authentication = null)
+    public static function getS3Instance(Element\Authentication $authentication = null)
     {
-        if (!empty(self::$instance)) {
-            return self::$instance;
+        if (!empty(self::$s3instance)) {
+            return self::$s3instance;
         }
 
-        self::$instance = new S3Client([
+        self::$s3instance = new S3Client(
+            self::buildAuthentication($authentication)
+        );
+
+        return self::$s3instance;
+    }
+
+    public static function getCloudFrontInstance(Element\Authentication $authentication = null)
+    {
+        if (!empty(self::$cloudFrontInstance)) {
+            return self::$cloudFrontInstance;
+        }
+
+        self::$cloudFrontInstance = new CloudFrontClient(
+            self::buildAuthentication($authentication)
+        );
+
+        return self::$cloudFrontInstance;
+    }
+
+    public static function buildAuthentication(Element\Authentication $authentication = null)
+    {
+        return [
             'version' => 'latest',
             'region'  => $authentication->getRegion(),
             'credentials' => [
                 'key' => $authentication->getKey(),
                 'secret' => $authentication->getSecret(),
             ]
-        ]);
-
-        return self::$instance;
+        ];
     }
 }
