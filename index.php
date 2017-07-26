@@ -178,6 +178,7 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a href="#" class="batch-action" id="delete">Delete</a></li>
+                                <li><a href="#" class="batch-action" id="invalidate">Invalidate</a></li>
                             </ul>
                         </div>
                     </th>
@@ -199,6 +200,8 @@ define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER[
     var BASE_PATH = '<?=PATH_WEB?>';
 </script>
 <script src="web/js/bootstrap.min.js"></script>
+<script src="web/js/bootbox.min.js"></script>
+<script src="web/js/notify.min.js"></script>
 <script src="web/js/main.js"></script>
 
 </body>

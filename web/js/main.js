@@ -95,7 +95,7 @@ var Main = function() {
 
         if (buckets == false) {
             self.hideLoader();
-            alert('Could not fetch buckets! Verify that your authentications are correct.');
+            bootbox.alert('Could not fetch buckets! Verify that your authentications are correct.');
             return false;
         }
 
@@ -129,7 +129,7 @@ var Main = function() {
         var selector = $(".check-object:checked");
 
         if (selector.length < 1) {
-            alert("No file selected!");
+            $.notify("No file selected!", "warn");
             return false;
         }
 
@@ -142,10 +142,27 @@ var Main = function() {
 
         switch ($(this).attr("id")) {
             case 'delete':
-                self.batchDeleteFile(files);
+                bootbox.confirm(
+                    'Several files will be excluded. Are you sure?',
+                    function(result) {
+                        if (result) {
+                            self.batchDeleteFile(files);
+                        }
+                    }
+                );
+                break;
+            case 'invalidate':
+                bootbox.confirm(
+                    'Are you sure you want to invalidate these files?',
+                    function(result) {
+                        if (result) {
+                            self.invalidateFiles(files);
+                        }
+                    }
+                );
                 break;
             default:
-                alert("Action not found.");
+                $.notify("Action not found.", "warn");
         }
 
         $("#check-all").prop("checked", false);
@@ -230,35 +247,36 @@ var Main = function() {
     this.clickDeleteFile = function() {
         var file = $(this).attr("data-file");
 
-        if (!confirm("You are about to delete the file (" + file + "). Are you sure?")) {
-            return false;
-        }
+        bootbox.confirm(
+            "You are about to delete the file (" + file + "). Are you sure?",
+            function(result) {
 
-        self.showLoader("Deleting...");
+                if (!result) {
+                    return;
+                }
 
-        var connectionId = $("#connectionId").val();
-        var bucket = $("#bucket").attr("data-bucket");
-        var path = self.buildPathFile($(this).attr("data-file"));
+                self.showLoader("Deleting...");
+
+                var connectionId = $("#connectionId").val();
+                var bucket = $("#bucket").attr("data-bucket");
+                var path = self.buildPathFile(file);
 
 
-        var deleted = self.postApiDeleteObject(connectionId, bucket, path);
+                var deleted = self.postApiDeleteObject(connectionId, bucket, path);
 
-        self.hideLoader();
+                self.hideLoader();
 
-        if (deleted == true) {
-            alert("Deleted successfully");
-            self.pathKeyDown();
-        } else {
-            alert("Could not delete file");
-        }
-
+                if (deleted == true) {
+                    $.notify("Deleted successfully", "success");
+                    self.pathKeyDown();
+                } else {
+                    $.notify("Could not delete file", "error");
+                }
+            }
+        );
     };
 
     this.batchDeleteFile = function(files) {
-
-        if (!confirm('Several files will be erased. Are you sure?')) {
-            return false;
-        }
 
         self.showLoader("Deleting...");
 
@@ -270,11 +288,30 @@ var Main = function() {
         self.hideLoader();
 
         if (deleted == true) {
-            alert("Deleted successfully");
+            $.notify("Deleted successfully!", "success");
             self.pathKeyDown();
         } else {
-            alert("Could not delete file");
+            $.notify("Could not delete file", "error");
         }
+    };
+
+    this.invalidateFiles = function(files) {
+
+        self.showLoader("Invalidating...");
+
+        var connectionId = $("#connectionId").val();
+
+        var success = self.postApiInvalidateObjects(connectionId, files);
+
+        self.hideLoader();
+
+        if (success == true) {
+            $.notify("Operation completed successfully!", "success");
+        } else {
+            $.notify("Could not invalidate files.", "error");
+        }
+
+        $(".check-object:checked").prop("checked", false);
     };
 
     this.listObjects = function (bucket, path) {
@@ -357,7 +394,7 @@ var Main = function() {
         if (!bucket || bucket == "-") {
             self.hideLoader();
             path.val("");
-            alert("You must be in some bucket!");
+            $.notify("You must be in some bucket!", "warn");
             return false;
         }
 
@@ -371,14 +408,14 @@ var Main = function() {
     this.uploadModal = function () {
 
         if (!$("#connectionId").val()) {
-            alert("You must be connected in to upload!");
+            $.notify("You must be connected in to upload!", "warn");
             return false;
         }
 
         var bucket = $("#bucket").attr("data-bucket");
 
         if (!bucket) {
-            alert("You must be in some bucket!");
+            $.notify("You must be in some bucket!", "warn");
             return false;
         }
 
@@ -459,7 +496,7 @@ var Main = function() {
         self.hideLoader();
 
         if (uploaded == false) {
-            alert("Could not send files");
+            $.notify("Could not send files", "error");
         } else {
             $('#upload').modal('hide');
             self.pathKeyDown();
@@ -591,19 +628,19 @@ var Main = function() {
             region = $("#region");
 
         if (!name.val()) {
-            alert("Name is required!");
+            $.notify("Name is required!", "error");
             name.focus();
             return false;
         }
 
         if (!key.val()) {
-            alert("Key is required!");
+            $.notify("Key is required!", "error");
             key.focus();
             return false;
         }
 
         if (!secret.val()) {
-            alert("Secret is required!");
+            $.notify("Secret is required!", "error");
             secret.focus();
             return false;
         }
@@ -617,7 +654,7 @@ var Main = function() {
         };
 
         if (self.postApiAuthentication(dataSend) == false) {
-            alert("Could not save");
+            $.notify("Could not save", "error");
             return false;
         }
 
@@ -644,7 +681,7 @@ var Main = function() {
 
         $(".show-authenticate").click(self.showAuthentication);
 
-        alert("Saved successfully");
+        $.notify("Saved successfully", "success");
 
     };
 
@@ -942,6 +979,41 @@ var Main = function() {
 
         $.ajax({
             'url': BASE_PATH + '/api/objects/batch_delete/' + connectionId,
+            'dataType': 'json',
+            'type': 'POST',
+            'data': JSON.stringify(dataSend),
+            'contentType': 'application/json',
+            'async': false,
+            'success': function () {
+                success = true;
+            },
+            'error': function (xhr) {
+                if (xhr.status == 200) {
+                    success = true;
+                }
+            }
+        });
+
+        return success;
+    };
+
+    this.postApiInvalidateObjects = function(connectionId, files) {
+
+        if (
+            typeof connectionId == "undefined" ||
+            typeof files == "undefined"
+        ) {
+            return false;
+        }
+
+        var dataSend = {
+            'objects': files
+        };
+
+        var success = false;
+
+        $.ajax({
+            'url': BASE_PATH + '/api/objects/invalidate/' + connectionId,
             'dataType': 'json',
             'type': 'POST',
             'data': JSON.stringify(dataSend),
