@@ -1,10 +1,24 @@
 <?php
 
-$scheme = $_SERVER['REQUEST_SCHEME'];
+$scheme = @$_SERVER['REQUEST_SCHEME'];
 if (empty($scheme)) {
-    $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+    $scheme = @$_SERVER['HTTP_X_FORWARDED_PROTO'];
 }
-define('PATH_WEB', dirname($scheme . '://' . $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME']));
+if (empty($scheme)) {
+    $scheme = 'http';
+}
+
+$port = '';
+if (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80) {
+    $port = ':' . $_SERVER['SERVER_PORT'];
+}
+
+$host = $_SERVER['SERVER_NAME'];
+if (!empty($_SERVER['HTTP_HOST'])) {
+    $host = str_replace($port, '', $_SERVER['HTTP_HOST']);
+}
+
+define('PATH_WEB', dirname($scheme . '://' . $host . $port . $_SERVER['SCRIPT_NAME']));
 
 ?>
 
