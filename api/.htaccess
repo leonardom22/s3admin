@@ -1,12 +1,3 @@
-options -Indexes -MultiViews +FollowSymlinks
-
-php_flag magic_quotes_gpc Off
-php_flag magic_quotes_runtime Off
-php_flag magic_quotes_sybase Off
-php_flag register_globals Off
-php_flag short_open_tag On
-php_flag session.cookie_httponly On
-
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteRule "(^|/)\." - [F,L]
@@ -14,20 +5,4 @@ php_flag session.cookie_httponly On
     RewriteCond %{REQUEST_FILENAME} !-f
         RewriteCond ^/$ !(\.(gif¦jpg¦css)$¦^/$)
     RewriteRule ^(.*)$ index.php?_url=$1 [QSA,L]
-
 </IfModule>
-
-<IfModule mod_deflate.c>
-  <IfModule mod_setenvif.c>
-    <IfModule mod_headers.c>
-      SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding
-      RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding
-    </IfModule>
-  </IfModule>
-
-</IfModule>
-
-<IfModule mod_headers.c>
-  Header unset ETag
-</IfModule>
-FileETag None
