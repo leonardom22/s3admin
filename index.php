@@ -136,6 +136,28 @@ define('PATH_WEB', dirname($scheme . '://' . $host . $port . $_SERVER['SCRIPT_NA
     </div>
 </div>
 
+<div class="modal fade" id="modal-new-folder" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="authenticate-modal-name">New Folder</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="folder-name">Name</label>
+                    <input type="text" class="form-control" id="folder-name" placeholder="Folder">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="button-new-folder">Create <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
@@ -155,6 +177,7 @@ define('PATH_WEB', dirname($scheme . '://' . $host . $port . $_SERVER['SCRIPT_NA
                     </ul>
                 </li>
                 <li><a href="#" id="link-upload"><span class="glyphicon glyphicon-open"></span> Upload</a></li>
+                <li><a href="#" id="new-folder"><span class="glyphicon glyphicon-folder-open"></span> New Folder</a></li>
                 <li><a href="#" id="refresh"><span class="glyphicon glyphicon-refresh"></span> Refresh</a></li>
             </ul>
         </div>

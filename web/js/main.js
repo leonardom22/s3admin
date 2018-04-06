@@ -20,6 +20,9 @@ var Main = function() {
 
         $("#link-upload").click(self.uploadModal);
 
+        $("#new-folder").click(self.newFolderModal);
+        $("#button-new-folder").click(self.newFolder);
+
         $("#load-more").click(self.loadMore);
 
         $("#check-all").click(self.checkAll);
@@ -426,6 +429,47 @@ var Main = function() {
         $("#button-upload-file").attr("disabled", true);
 
         $('#upload').modal('show');
+    };
+
+    this.newFolderModal = function() {
+
+        if (!$("#connectionId").val()) {
+            $.notify("You must be connected in to create folders", "warn");
+            return false;
+        }
+
+        var bucket = $("#bucket").attr("data-bucket");
+
+        if (!bucket) {
+            $.notify("You must be in some bucket!", "warn");
+            return false;
+        }
+
+        $("#modal-new-folder").modal('show');
+    };
+
+    this.newFolder = function() {
+
+        var folderName = $("#folder-name").val();
+
+        if (!folderName) {
+            $.notify("You must enter a folder!", "warn");
+            return false;
+        }
+
+        self.showLoader();
+
+        var success = self.postApiCreateFolder($("#connectionId").val(), $("#bucket").attr("data-bucket"), folderName);
+
+        self.hideLoader();
+
+        if (success) {
+            $.notify("Successfully created folder", "success");
+            $("#modal-new-folder").modal('hide');
+            self.pathKeyDown();
+        } else {
+            $.notify("Could not create folder", "error");
+        }
     };
 
     this.traverseFiles = function(files) {
@@ -878,6 +922,45 @@ var Main = function() {
         });
 
         return apiReturn['file'];
+    };
+
+    this.postApiCreateFolder = function(connectionId, bucket, folder) {
+        if (
+            typeof connectionId == "undefined"
+            ||
+            typeof folder == "undefined"
+            ||
+            typeof bucket == "undefined"
+        ) {
+            return false;
+        }
+
+        var dataSend = {
+            'folder': folder,
+            'bucket': bucket
+        };
+
+        var success = false;
+
+        $.ajax({
+            'url': BASE_PATH + '/api/folder/' + connectionId,
+            'dataType': 'json',
+            'type': 'POST',
+            'data': JSON.stringify(dataSend),
+            'contentType': 'application/json',
+            'async': false,
+            'success': function (data) {
+                success = true;
+            },
+            'error': function (xhr) {
+                console.log(xhr.responseText);
+                if (xhr.status == 200) {
+                    success = true;
+                }
+            }
+        });
+
+        return success;
     };
 
     this.postApiCreateObject = function(connectionId, bucket, path, objects) {

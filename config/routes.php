@@ -43,5 +43,10 @@ return [
         'POST' => [
             'action' => 'Authentications/Register',
         ]
+    ],
+    '/folder/{connectionId}' => [
+        'POST' => [
+            'action' => 'Folder/Create'
+        ]
     ]
 ];
